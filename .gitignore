@@ -1,2 +1,6 @@
+# Directories
+env/
+
 # Files
 .DS_store
+
