@@ -2,44 +2,58 @@ import tkinter as tk
 
 class Window:
     def __init__(self):
-        self.window = tk.Tk()
+        # Initialize window
+        self.window = self.initialize_window()
 
-        self.window.rowconfigure(0, minsize=50, weight=1)
-        self.window.columnconfigure([0, 1, 2], minsize=50, weight=1)
+    def initialize_window(self):
+        window = tk.Tk()
 
-        btn_decrease = tk.Button(master=self.window,
+        window.rowconfigure(0, minsize=50, weight=1)
+        window.columnconfigure([0, 1, 2], minsize=50, weight=1)
+
+        # Button
+        btn_decrease = tk.Button(master=window,
                                  text="Dividend dates",
                                  command=self.run_dividend_dates)
         
         btn_decrease.grid(row=0, column=0, sticky="nsew")
 
-        self.lbl_value = tk.Label(master=self.window, text="Choose an option")
-        self.lbl_value.grid(row=0, column=1)
+        # Label
+        lbl_value = tk.Label(master=window, text="Choose an option")
+        lbl_value.grid(row=0, column=1)
 
-        btn_increase = tk.Button(master=self.window,
+        btn_increase = tk.Button(master=window,
                                  text="Rebalancing",
                                  command=self.run_rebalancing)
-        
+
+        # Button
         btn_increase.grid(row=0, column=2, sticky="nsew")
 
-        self.window.mainloop()
+        return window
 
     # Functions
+    def mainloop(self):
+        self.window.mainloop()
+    
     def close_window(self):
         self.window.destroy()
     
     def run_dividend_dates(self):
-        self.lbl_value["text"] = 'Will run dividend_dates'
+        self.close_window()
 
         # Run the dividend_dates.py script
-        self.close_window()
         from dividends import dividend_dates
 
     def run_rebalancing(self):
-        self.lbl_value["text"] = 'Will run rebalancing'
+        self.close_window()
+
+        print('Will run rebalancing.')
 
 def run():
+    # Make window object
     window_obj = Window()
+    # Run mainloop
+    window_obj.mainloop()
 
 
 
