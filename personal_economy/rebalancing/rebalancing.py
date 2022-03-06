@@ -370,9 +370,7 @@ def run(path):
 
     # Plot distributions
     rebalancing_obj.plot_distributions()
-
-if __name__ == '__main__':
     
-    # Runs the simulation
-    run(path)
+# Runs the simulation
+run(path)
 

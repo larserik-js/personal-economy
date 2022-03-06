@@ -47,8 +47,9 @@ class Window:
     def run_rebalancing(self):
         self.close_window()
 
-        print('Will run rebalancing.')
-
+        # Run the dividend_dates.py script
+        from rebalancing import rebalancing
+        
 def run():
     # Make window object
     window_obj = Window()
