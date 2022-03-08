@@ -6,34 +6,40 @@ Created on Tue Oct 26 19:25:23 2021
 @author: larserikskjegstad
 """
 
+import sys
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 import pandas as pd
-import sys
 from datetime import date, timedelta
 import os
 import sys
+#from . import make_window
+from rebalancing import make_window
 
-path = os.path.dirname(os.path.realpath(__file__)) + '/'
-sys.path.append(path)
 
 class Rebalancing:
-    def __init__(self, path):
+    def __init__(self):
         # Get today's date from input
         #self.today = input("Enter today's date (DD-MM-YYYY): ")
 
         # Dictionary of exchange rates
         self.ER_dict, self.ER_date = self.scrape_ERs()
 
+
+        window_obj = make_window.Window()
+        self.person, amount_and_currency = window_obj.get_input()
+
+
         # Get person from input
-        self.person = input("Enter person name ('Anna' or 'LE'): ")
+        #self.person = input("Enter person name ('Anna' or 'LE'): ")
         if self.person != 'LE' and self.person != 'Anna':
             print('Person entered is neither Anna nor LE.')
             sys.exit()
 
         # Get amount to invest from input
-        amount_and_currency = input('Enter amount to invest followed by currency (e.g. 1000 EUR): ')
+        #amount_and_currency = input('Enter amount to invest followed by currency (e.g. 1000 EUR): ')
         string_list = amount_and_currency.split(' ')
 
         # Checks if the value entered can be converted to float
@@ -43,7 +49,6 @@ class Rebalancing:
             print('Amount entered is not a valid value.')
             sys.exit()
             
-        # Get the amount to invest from input
         amount_to_invest = float(string_list[0])
 
         # Checks if the currency entered is supported
@@ -57,10 +62,8 @@ class Rebalancing:
         self.amount_to_invest = self.ER_dict[currency_to_invest] * amount_to_invest
 
         # Create the data frame    
-        self.df = pd.read_excel(path + 'portfolio_' + self.person + '.xlsx',
+        self.df = pd.read_excel('input/portfolio_' + self.person + '.xlsx',
                              header=14)
-
-        print(self.df)
         
         # Instrument categories
         self.categories = self.df.Category.unique()
@@ -360,17 +363,14 @@ class Rebalancing:
         print('')
             
 # The simulation
-def run(path):
+def run():
     
     # Create rebalancing object
-    rebalancing_obj = Rebalancing(path)
+    rebalancing_obj = Rebalancing()
     
     # Print investments
     rebalancing_obj.print_information()
 
     # Plot distributions
     rebalancing_obj.plot_distributions()
-    
-# Runs the simulation
-run(path)
 

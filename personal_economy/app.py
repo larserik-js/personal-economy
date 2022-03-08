@@ -1,4 +1,5 @@
 import tkinter as tk
+from rebalancing import rebalancing
 
 class Window:
     def __init__(self):
@@ -48,7 +49,7 @@ class Window:
         self.close_window()
 
         # Run the dividend_dates.py script
-        from rebalancing import rebalancing
+        rebalancing.run()
         
 def run():
     # Make window object
