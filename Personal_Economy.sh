@@ -5,4 +5,4 @@ cd "$(dirname "$0")"
 source env/bin/activate
 
 # Run package
-python3 personal_economy/ 
+python3 -m personal_economy

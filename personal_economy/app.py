@@ -1,5 +1,5 @@
 import tkinter as tk
-from rebalancing import rebalancing
+from personal_economy.rebalancing import rebalancing
 
 class Window:
     def __init__(self):

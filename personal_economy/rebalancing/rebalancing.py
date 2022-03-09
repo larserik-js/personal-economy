@@ -15,9 +15,7 @@ import pandas as pd
 from datetime import date, timedelta
 import os
 import sys
-#from . import make_window
-from rebalancing import make_window
-
+from personal_economy.rebalancing import make_window
 
 class Rebalancing:
     def __init__(self):
@@ -373,4 +371,3 @@ def run():
 
     # Plot distributions
     rebalancing_obj.plot_distributions()
-
