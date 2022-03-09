@@ -1,5 +1,7 @@
 import tkinter as tk
 from personal_economy.rebalancing import rebalancing
+from personal_economy.dividends import dividend_dates
+
 
 class Window:
     def __init__(self):
@@ -43,7 +45,7 @@ class Window:
         self.close_window()
 
         # Run the dividend_dates.py script
-        from dividends import dividend_dates
+        dividend_dates.run()
 
     def run_rebalancing(self):
         self.close_window()

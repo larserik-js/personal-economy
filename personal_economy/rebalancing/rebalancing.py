@@ -5,7 +5,6 @@ Created on Tue Oct 26 19:25:23 2021
 
 @author: larserikskjegstad
 """
-
 import sys
 import os
 import numpy as np

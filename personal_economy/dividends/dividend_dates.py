@@ -120,11 +120,10 @@ def format_cents_to_dollars(df):
     return df 
 
 # Run the script
-"""
-if __name__ == '__main__':
+def run():
     # Concatenate all dfs
     df_concatenated = concatenate_dfs()
-        
+      
     # Sort by date and select display the next 10 payments (by ex-div date)
     next_dividends = sort_and_select_next(df_concatenated, 10)
     
@@ -134,23 +133,3 @@ if __name__ == '__main__':
     print(next_dividends)
     
     print(f'Total time: {DT() - t_init:.2f} s')
-"""
-
-"""
-url = 'https://www.dividendmax.com/united-states/nyse/tobacco/altria-group-inc/dividends'
-df = pd.read_html(io=url, match='Currency')[0]
-print(df)
-"""
-
-# Concatenate all dfs
-df_concatenated = concatenate_dfs()
-      
-# Sort by date and select display the next 10 payments (by ex-div date)
-next_dividends = sort_and_select_next(df_concatenated, 10)
-    
-# Format dividend values from cents to dollars
-next_dividends = format_cents_to_dollars(next_dividends)
-    
-print(next_dividends)
-    
-print(f'Total time: {DT() - t_init:.2f} s')
