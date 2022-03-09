@@ -14,7 +14,7 @@ import pandas as pd
 from datetime import date, timedelta
 import os
 import sys
-from personal_economy.rebalancing import make_window
+from personal_economy.rebalancing import window
 
 class Rebalancing:
     def __init__(self):
@@ -25,7 +25,7 @@ class Rebalancing:
         self.ER_dict, self.ER_date = self.scrape_ERs()
 
 
-        window_obj = make_window.Window()
+        window_obj = window.Window()
         self.person, amount_and_currency = window_obj.get_input()
 
 
