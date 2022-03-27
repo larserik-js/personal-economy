@@ -10,27 +10,34 @@ class Window:
 
     def initialize_window(self):
         window = tk.Tk()
+        window.title('Personal economy tools')
 
-        window.rowconfigure(0, minsize=50, weight=1)
-        window.columnconfigure([0, 1, 2], minsize=50, weight=1)
+        # Do not allow resizing
+        window.resizable(height=0, width=0)
+
+        # Configure window geometry
+        window.columnconfigure([0, 1, 2], minsize=70)
+        window.rowconfigure(0, minsize=60)
 
         # Button
-        btn_decrease = tk.Button(master=window,
+        btn_div_dates = tk.Button(master=window,
                                  text="Dividend dates",
                                  command=self.run_dividend_dates)
         
-        btn_decrease.grid(row=0, column=0, sticky="nsew")
+        ## Assign place in cell
+        btn_div_dates.grid(row=0, column=0, sticky="NSEW")
 
         # Label
-        lbl_value = tk.Label(master=window, text="Choose an option")
+        lbl_value = tk.Label(master=window, text="<-- Choose an option -->")
         lbl_value.grid(row=0, column=1)
 
-        btn_increase = tk.Button(master=window,
+        # Button
+        btn_rebalancing = tk.Button(master=window,
                                  text="Rebalancing",
                                  command=self.run_rebalancing)
 
-        # Button
-        btn_increase.grid(row=0, column=2, sticky="nsew")
+        ## Assign place in cell
+        btn_rebalancing.grid(row=0, column=2, sticky="NSEW")
 
         return window
 
