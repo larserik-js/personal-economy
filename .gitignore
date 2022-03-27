@@ -3,6 +3,7 @@ __pycache__/
 
 # Directories
 env/
+personal_economy/miscellaneous/
 
 # Files
 .DS_store
