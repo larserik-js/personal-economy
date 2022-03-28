@@ -6,7 +6,7 @@ class Window:
         self.fields = ['Enter person name ("Anna" or "LE")',
                        'Enter amount to invest followed by currency (e.g. 1000 EUR)']
         self.input_strings = []
-        self.ents = self.makeform(self.root, self.fields)
+        self.ents = self.makeform(self.fields)
     
     def fetch(self, entries):
         for entry in entries:
@@ -16,11 +16,14 @@ class Window:
             #print('%s: "%s"' % (field, text))
         self.close_window()
             
-    def makeform(self, root, fields):
+    def makeform(self, fields):
+        # Set window title
+        self.root.title('')
+
         entries = []
         for field in fields:
-            row = tk.Frame(root)
-            lab = tk.Label(row, width=15, text=field, anchor='w')
+            row = tk.Frame(self.root)
+            lab = tk.Label(row, width=50, text=field, anchor='w')
             ent = tk.Entry(row)
             row.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
             lab.pack(side=tk.LEFT)
