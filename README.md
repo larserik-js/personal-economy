@@ -5,7 +5,7 @@ Overall, two tools are included:
 * _Rebalancing_, which gives the user information on the proper amounts to invest in different financial instruments, given a portfolio risk allocation.
 * _Dividend dates_, which provides information on the next payout dates and amounts for given stocks.
 
-## Setup (OS X & Linux)
+## Setup (macOS & Linux)
 The necessary libraries for this application can be installed in the following way:
 * Navigate into the directory of ``requirements.txt``.
 * Set up a virtual environment.
@@ -27,4 +27,4 @@ This tool activates automatically when clicking the button. Given a list of comp
 ## Meta
 Lars Erik J. Skjegstad - lars_erik_skjegstad@hotmail.com
 
-This project is not open source, and thus does not come with a license.
+This repository exists for demonstration purposes only, and thus does not come with a license.
