@@ -59,7 +59,7 @@ class Rebalancing:
         self.amount_to_invest = self.ER_dict[currency_to_invest] * amount_to_invest
 
         # Create the data frame    
-        self.df = pd.read_excel('input/portfolio_' + self.person + '.xlsx',
+        self.df = pd.read_excel('input/' + self.person + '.xlsx',
                              header=14)
         
         # Instrument categories
