@@ -1,152 +1,62 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Oct 26 19:25:23 2021
-
-@author: larserikskjegstad
-"""
-import sys
-import os
+#from locale import currency
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.optimize import minimize
 import pandas as pd
-from datetime import date, timedelta
-import os
+from scipy import optimize
+import matplotlib.pyplot as plt
 import sys
-from personal_economy.rebalancing import window
 
-class Rebalancing:
-    def __init__(self):
-        # Get today's date from input
-        #self.today = input("Enter today's date (DD-MM-YYYY): ")
+import gui
+from diversification import get_diversification_dicts
+import scraper
 
-        # Dictionary of exchange rates
-        self.ER_dict, self.ER_date = self.scrape_ERs()
+class GetInput:
+    # Dictionary of exchange rates
+    ER_dict, ER_date = scraper.scrape_ERs()
 
-
-        window_obj = window.Window()
-        self.person, amount_and_currency = window_obj.get_input()
-
-
-        # Get person from input
-        #self.person = input("Enter person name ('Anna' or 'LE'): ")
-        if self.person != 'LE' and self.person != 'Anna':
-            print('Person entered is neither Anna nor LE.')
-            sys.exit()
-
-        # Get amount to invest from input
-        #amount_and_currency = input('Enter amount to invest followed by currency (e.g. 1000 EUR): ')
-        string_list = amount_and_currency.split(' ')
-
-        # Checks if the value entered can be converted to float
-        try:
-            float(string_list[0])
-        except ValueError:
-            print('Amount entered is not a valid value.')
-            sys.exit()
-            
-        amount_to_invest = float(string_list[0])
-
-        # Checks if the currency entered is supported
-        if string_list[1] not in [currency_name for currency_name in self.ER_dict.keys()]:
-            print('Currency not supported.')
-            sys.exit()
-            
-        currency_to_invest = string_list[1]
-
-        # Convert currency to invest to DKK
-        self.amount_to_invest = self.ER_dict[currency_to_invest] * amount_to_invest
-
-        # Create the data frame    
-        self.df = pd.read_excel('input/' + self.person + '.xlsx',
-                             header=14)
+    # Get person and amount to invest from input
+    person, amount, currency = gui.get_input()
         
+    # Convert currency to invest to DKK
+    amount_DKK = ER_dict[currency] * amount
+
+    # Diversification dictionaries
+    diversification_dict, region_diversification_dict = get_diversification_dicts(person)
+       
+
+class CalculateInvestments(GetInput):
+    def __init__(self):
+
+        # Create the data frame 
+        self.df = pd.read_excel('../../input/' + self.person + '.xlsx',
+                             header=14)
+                
         # Instrument categories
         self.categories = self.df.Category.unique()
         # Number of categories
         self.n_categories = len(self.categories)
         
-        # Total portfolio value
-        all_amounts = self.df['Amount'].to_numpy()
-        all_ERs = self.get_ERs(self.df['Currency'].to_numpy())
-        self.total_value = (all_amounts * all_ERs).sum()
-        
-
-        # Portfolio diversification
-        
-        if self.person == 'LE':
-            self.diversification_dict = {
-                                         # High risk
-                                         'Stocks_ETF': 0.66,
-                                         'Dividend_stocks_high': 0.03,
-                                         'Private_equity': 0.02,
-                                         'Alternative': 0.01,
-                                         # Medium risk
-                                         'Dividend_stocks_medium': 0.10,
-                                         'Property': 0.10,
-                                         # Low risk
-                                         'Dividend_stocks_low': 0.08,
-                                         'Bonds': 0.0
-                                         }
-    
-        elif self.person == 'Anna':
-        
-            self.diversification_dict = {
-                                         # High risk
-                                         'Stocks_ETF': 0.67,
-                                         'Dividend_stocks_high': 0.0,
-                                         'Private_equity': 0.03,
-                                         'Alternative': 0.00,
-                                         # Medium risk
-                                         'Dividend_stocks_medium': 0.10,
-                                         'Property': 0.05,
-                                         # Low risk
-                                         'Dividend_stocks_low': 0.05,
-                                         'Bonds': 0.1
-                                         }
-    
-        else:
-            raise AssertionError('Person entered is neither Anna nor LE.')
-        
-        # Stock ETF regional diversification
-        self.region_diversification_dict = {'iShares Core MSCI Emerging Markets IMI UCITS ETF': 0.1,
-                                            'iShares Core MSCI Europe UCITS ETF EUR (Acc)': 0.19,
-                                            'iShares Core MSCI Japan IMI UCITS ETF': 0.07,
-                                            'iShares Core MSCI Pacific ex Japan UCITS ETF': 0.06,
-                                            'iShares Core S&P 500 UCITS ETF': 0.56,
-                                            'iShares MSCI Canada UCITS ETF': 0.02}
-    
-        # Checks if regional diversification sums to 100%
-        if np.array([value for value in self.region_diversification_dict.values()]).sum() != 1:
-            raise AssertionError('Region diversification does not sum to 100%.')
-    
-        # Checks if the diversification values sum to 1        
-        values = np.array([value for _, value in self.diversification_dict.items()])
-    
-        if values.sum() != 1:
-            raise AssertionError('Diversification values do not add up to 100%')
-            
-        
         # Checks if the number of categories in the .csv file is not higher than in the script
         if self.n_categories > len(self.diversification_dict):
             raise AssertionError('No. of instrument categories in .csv file'\
                                   + ' larger than in Python script.')
-         
-                    
+
+        # Total portfolio value
+        all_amounts = self.df['Amount'].to_numpy()
+        all_ERs = self.get_ERs(self.df['Currency'].to_numpy())
+        self.total_value = (all_amounts * all_ERs).sum()
+
+
         self.current_distribution_dict = self.get_current_distribution()
         self.current_distribution = np.array([value for value in self.current_distribution_dict.values()])
 
-        
         self.desired_distribution_dict = self.generate_desired_distribution()
         
-        self.desired_distribution = np.array([value * (self.total_value + self.amount_to_invest) 
+        self.desired_distribution = np.array([value * (self.total_value + self.amount_DKK) 
                                 for value in self.diversification_dict.values()])
 
         self.distribution_difference = self.desired_distribution - self.current_distribution
 
-        
-        # An array of the investments
+                # An array of the investments
         self.investments = self.find_investments()
 
         # The dictionary of investments
@@ -156,52 +66,15 @@ class Rebalancing:
 
         # Regional diversification of stock ETFs
         self.stock_ETF_investments_dict = self.find_stock_ETF_investments()
-        
-    # Get today's exchange rates
-    def scrape_ERs(self):
-        # URL for currency exchange rates
-        url = 'https://www.nationalbanken.dk/valutakurser'
-    
-        ER_df = pd.read_html(url)[0]
 
-        headers = ER_df.columns.values
-
-        # Today's date
-        today = date.today()
-
-        # Try to get exchange rates from the last 10 days
-        for i in range(10):
-            ER_date = today - timedelta(days=i)
-            ER_date = ER_date.strftime("%d-%m-%Y")            
-            if ER_date in headers:
-                # Define exchange rates
-                ER_NOK_to_DKK = 0.0001 * (ER_df[ER_date].loc[(ER_df.ISO == 'NOK')]).to_numpy()[0]
-                ER_EUR_to_DKK = 0.0001 * (ER_df[ER_date].loc[(ER_df.ISO == 'EUR')]).to_numpy()[0]
-                ER_USD_to_DKK = 0.0001 * (ER_df[ER_date].loc[(ER_df.ISO == 'USD')]).to_numpy()[0]
-                break
-
-        # If exchange rates cannot be found online, input own values
-        if ER_date not in headers:
-            print("Online exchange rates not found.")
-            ER_NOK_to_DKK = float(input("Enter the value of 1 NOK in DKK (e.g. 0.75): "))
-            ER_EUR_to_DKK = float(input("Enter the value of 1 EUR in DKK (e.g. 7.5): "))
-            ER_USD_to_DKK = float(input("Enter the value of 1 USD in DKK (e.g. 6.5): "))
-        
-        # Dictionary containing the currency names strings as keys,
-        # and the (current) respective exchange rates as values
-        ER_dict = {'DKK': 1, 'NOK': ER_NOK_to_DKK, 'EUR': ER_EUR_to_DKK,
-                       'USD': ER_USD_to_DKK}
-
-        return ER_dict, ER_date
-    
     # Takes an array of currency name strings, and returns an array
     # with exchange rate values
     def get_ERs(self, ER_strings):
         # Convert strings to ER values
         ER_values = np.array([self.ER_dict[ER] for ER in ER_strings])
         return ER_values
-        
-    # Displays current portfolio distribution
+
+     # Displays current portfolio distribution
     def get_current_distribution(self):
         current_distribution_dict = {}
 
@@ -219,16 +92,16 @@ class Rebalancing:
                 current_distribution_dict[category] = 0
 
         return current_distribution_dict
-        
+
     # Returns a vector with desired final amounts for each category
     def generate_desired_distribution(self):
         desired_distribution_dict = {}
                         
         for category, fraction in self.diversification_dict.items():
-            desired_distribution_dict[category] = fraction * (self.total_value + self.amount_to_invest) 
+            desired_distribution_dict[category] = fraction * (self.total_value + self.amount_DKK) 
         
         return desired_distribution_dict
-    
+
     def find_investments(self):
         # The function to minimize
         # Global minimum = 0
@@ -236,10 +109,10 @@ class Rebalancing:
         function = lambda x: np.linalg.norm(x - self.distribution_difference)
         
         # The total amount of new investments should equal the available amount
-        constraints = {'type': 'eq', 'fun': lambda x: x.sum() - self.amount_to_invest}
+        constraints = {'type': 'eq', 'fun': lambda x: x.sum() - self.amount_DKK}
 
         # Solve
-        sol = minimize(function, self.distribution_difference, method='SLSQP', 
+        sol = optimize.minimize(function, self.distribution_difference, method='SLSQP', 
                        constraints=constraints,
                        bounds=[(0.,None) for _ in range(len(self.distribution_difference))])
         
@@ -275,7 +148,7 @@ class Rebalancing:
         constraints = {'type': 'eq', 'fun': lambda x: x.sum() - total_new_investments}
 
         # Solve
-        sol = minimize(function, distribution_difference, method='SLSQP', 
+        sol = optimize.minimize(function, distribution_difference, method='SLSQP', 
                        constraints=constraints,
                        bounds=[(0.,None) for _ in range(len(distribution_difference))])
         
@@ -288,6 +161,17 @@ class Rebalancing:
             
         return stock_ETF_dict
 
+
+class Visualize(CalculateInvestments):
+
+    def __init__(self):
+        print('At Visualize')
+
+        super().__init__()
+
+        self.plot_distributions()
+
+        self.print_information()
 
     def plot_distributions(self):
         fig, ax = plt.subplots(figsize=(10,6))
@@ -307,7 +191,6 @@ class Rebalancing:
         fig.tight_layout()
         
         plt.show()
-
 
     def print_information(self):
         print('')
@@ -358,15 +241,11 @@ class Rebalancing:
 
         print(f'Total: {value_DKK_sum / self.ER_dict["EUR"]:.2f} EUR = {value_DKK_sum:.2f} DKK')
         print('')
-            
-# The simulation
-def run():
-    
-    # Create rebalancing object
-    rebalancing_obj = Rebalancing()
-    
-    # Print investments
-    rebalancing_obj.print_information()
 
-    # Plot distributions
-    rebalancing_obj.plot_distributions()
+
+if __name__ == '__main__':
+    GetInput()
+
+    CalculateInvestments()
+
+    Visualize()
