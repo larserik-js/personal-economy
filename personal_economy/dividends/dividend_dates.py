@@ -1,10 +1,11 @@
-import pandas as pd
 from datetime import datetime, date
-from threading import Thread
-import numpy as np
-import logging
 from timeit import default_timer as DT
-import sys
+from threading import Thread
+import logging
+
+import pandas as pd
+import numpy as np
+
 
 t_init = DT()
 

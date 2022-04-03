@@ -1,4 +1,5 @@
 import tkinter as tk
+
 from personal_economy.rebalancing import rebalancing
 from personal_economy.dividends import dividend_dates
 

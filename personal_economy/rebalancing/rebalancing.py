@@ -1,9 +1,9 @@
-#from locale import currency
+import sys
+
 import numpy as np
 import pandas as pd
 from scipy import optimize
 import matplotlib.pyplot as plt
-import sys
 
 from personal_economy.rebalancing import gui
 from personal_economy.rebalancing import scraper

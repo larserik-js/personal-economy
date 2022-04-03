@@ -1,5 +1,6 @@
-import pandas as pd
 from datetime import date, timedelta
+
+import pandas as pd
 
 
 # Get today's exchange rates
