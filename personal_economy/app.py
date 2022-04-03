@@ -4,6 +4,7 @@ from personal_economy.dividends import dividend_dates
 
 
 class Window:
+    
     def __init__(self):
         # Initialize window
         self.window = self.initialize_window()
@@ -57,7 +58,7 @@ class Window:
     def run_rebalancing(self):
         self.close_window()
 
-        # Run the dividend_dates.py script
+        # Run the rebalancing.py script
         rebalancing.run()
         
 def run():

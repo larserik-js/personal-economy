@@ -1,6 +1,22 @@
 import numpy as np
 import sys
 
+
+risk_categories = [
+                # High risk
+                'Stocks_ETF',
+                'Dividend_stocks_high',
+                'Private_equity',
+                'Alternative',
+                # Medium risk
+                'Dividend_stocks_medium',
+                'Property',
+                # Low risk
+                'Dividend_stocks_low',
+                'Bonds'
+                ]
+
+
 def get_diversification_dicts(person):
 
     # Person diversification dictionaries
@@ -56,5 +72,3 @@ def get_diversification_dicts(person):
         sys.exit()
 
     return person_diversification_dict, regional_diversification_dict
-
-    

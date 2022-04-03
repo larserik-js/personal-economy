@@ -21,8 +21,6 @@ class App(tk.Tk):
 
         # create widget
         self.create_widget()
-        print('created')
-
 
     def create_widget(self):
         self.title('')
@@ -72,9 +70,9 @@ class App(tk.Tk):
             # Set label to indicate invalid investment amount input
             self.label_invalid = ttk.Label(self, text='Invalid value!')
             self.label_invalid.grid(row=2, column=1)
+        # Return amount and destroy widget
         else:
             self.amount = float(self.amount)
-
             self.destroy()
 
 

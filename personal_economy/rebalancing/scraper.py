@@ -38,4 +38,4 @@ def scrape_ERs():
     ER_dict = {'DKK': 1, 'NOK': ER_NOK_to_DKK, 'EUR': ER_EUR_to_DKK,
                     'USD': ER_USD_to_DKK}
 
-    return ER_dict, ER_date    
+    return ER_dict, ER_date
