@@ -1,6 +1,9 @@
 """Contains specific information on the risk allocation of the different
 portfolios.
 
+Variables:
+    * RISK_CATEGORIES - a list of all the possible risk categories defined in
+      the package.
 Functions:
     * get_diversification_dicts - return the specific risk allocation for a
       given input person name.
@@ -10,7 +13,7 @@ import sys
 import numpy as np
 
 
-risk_categories = [# High risk
+RISK_CATEGORIES = [# High risk
                    'Stocks_ETF',
                    'Dividend_stocks_high',
                    'Private_equity',
@@ -22,7 +25,7 @@ risk_categories = [# High risk
                    'Dividend_stocks_low',
                    'Bonds']
 
-def values_sum_to_one(diversification_dict):
+def _values_sum_to_one(diversification_dict):
     diversification_array = np.array(
         [value for value in diversification_dict.values()]
     )
@@ -75,12 +78,12 @@ def get_diversification_dicts(person):
     }
 
     # Checks if the diversification values sum to 1        
-    if not values_sum_to_one(person_diversification_dict):
+    if not _values_sum_to_one(person_diversification_dict):
         print('Diversification values do not add up to 100%')
         sys.exit()
 
      # Checks if regional diversification sums to 100%
-    if not values_sum_to_one(regional_diversification_dict):
+    if not _values_sum_to_one(regional_diversification_dict):
         print('Regional diversification does not sum to 100%.')
         sys.exit()
 

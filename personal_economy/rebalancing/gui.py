@@ -8,7 +8,7 @@ import tkinter as tk
 from tkinter import ttk
 
 
-class App(tk.Tk):
+class _App(tk.Tk):
 
     def __init__(self):
         super().__init__()
@@ -26,9 +26,9 @@ class App(tk.Tk):
         self.entry_amount = ttk.Entry(self)
 
         # create widget
-        self.create_widget()
+        self._create_widget()
 
-    def create_widget(self):
+    def _create_widget(self):
         self.title('')
         self.geometry("500x150")
 
@@ -52,14 +52,9 @@ class App(tk.Tk):
         label_amount = ttk.Label(self, text='Enter amount to invest:',
                         font=headline_font)
         label_amount.grid(row=1, column=0)
-        #label_amount.config(bg= "gray51", fg= "red")
-        #label_amount.config(color="red")
         self.entry_amount.grid(row=1, column=1)
 
         # Option menu (currency)
-        #option_label_person = ttk.Label(self,  text='Select person name:', 
-        #                                font = headline_font)
-        #option_label_person.grid(column=1, row=0, sticky=tk.W, **paddings)
         option_menu_person = ttk.OptionMenu(
             self, self.option_var_currency, self.currencies[0],
             *self.currencies, command=None
@@ -68,10 +63,10 @@ class App(tk.Tk):
 
         # OK button
         ok_button = tk.Button(self, text='OK', state=tk.NORMAL, 
-                              command=self.get_input)
+                              command=self._get_input)
         ok_button.grid(row=3, column=1)
 
-    def get_input(self):
+    def _get_input(self):
         # Get input data
         self.person = self.option_var_person.get()
         self.amount = self.entry_amount.get()
@@ -90,7 +85,7 @@ class App(tk.Tk):
 
 
 def get_input():
-    widget = App()
+    widget = _App()
     widget.mainloop()
     
     return widget.person, widget.amount, widget.currency

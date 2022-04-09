@@ -8,7 +8,7 @@ from datetime import date, timedelta
 
 import pandas as pd
 
-def transform_ERs(ER_df, ER_date, currency):
+def _transform_ERs(ER_df, ER_date, currency):
     return 0.0001 * (ER_df[ER_date].loc[(ER_df.ISO == currency)]).to_numpy()[0]
 
 # Get today's exchange rates
@@ -30,9 +30,9 @@ def scrape_ERs():
         ER_date = ER_date.strftime("%d-%m-%Y")            
         if ER_date in headers:
             # Define exchange rates
-            ER_NOK_to_DKK = transform_ERs(ER_df, ER_date, 'NOK')
-            ER_EUR_to_DKK = transform_ERs(ER_df, ER_date, 'EUR')
-            ER_USD_to_DKK = transform_ERs(ER_df, ER_date, 'USD')
+            ER_NOK_to_DKK = _transform_ERs(ER_df, ER_date, 'NOK')
+            ER_EUR_to_DKK = _transform_ERs(ER_df, ER_date, 'EUR')
+            ER_USD_to_DKK = _transform_ERs(ER_df, ER_date, 'USD')
             break
 
     # If exchange rates cannot be found online, input own values

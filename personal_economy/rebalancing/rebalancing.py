@@ -2,8 +2,9 @@
 
 This is where all information is gathered, processed, and presented to the user.
 
-Functions:
-    * run - runs the script.
+Classes:
+    * CalculateInvestments - inherits all inputs from the _Input class.
+      Calculates and presents the suggestions for investments to the user.
 """
 import sys
 
@@ -15,10 +16,10 @@ import matplotlib.pyplot as plt
 from personal_economy.rebalancing import gui
 from personal_economy.rebalancing import scraper
 from personal_economy.rebalancing.diversification import (
-    risk_categories, get_diversification_dicts)
+    RISK_CATEGORIES, get_diversification_dicts)
 
 
-class Input:
+class _Input:
 
     def __init__(self):
         # Dictionary of exchange rates
@@ -35,7 +36,7 @@ class Input:
             = get_diversification_dicts(self.person)
 
 
-class CalculateInvestments(Input):
+class CalculateInvestments(_Input):
 
     def __init__(self):
         super().__init__()
@@ -68,7 +69,7 @@ class CalculateInvestments(Input):
         # Instrument categories
         df_categories = df.Category.unique()
 
-        if np.any([risk_category not in risk_categories 
+        if np.any([risk_category not in RISK_CATEGORIES 
                    for risk_category in df_categories]):
             print('Incorrect risk category in input .xlsx document.')
             sys.exit()
@@ -279,7 +280,3 @@ class CalculateInvestments(Input):
         print(f'Total: {value_DKK_sum / self.ER_dict["EUR"]:.2f} EUR '
               + f'= {value_DKK_sum:.2f} DKK')
         print('')
-
-
-def run():
-    CalculateInvestments()
