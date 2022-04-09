@@ -13,12 +13,17 @@ t_init = DT()
 # The values are the unique part of the URL of the dividend webpage
 company_urls = np.array(
     [['Altria Group Inc.', 'tobacco/altria-group-inc'],
-    ['IBM Corp.', 'electronic-and-electrical-equipment/international-business-machines-corp'],
-    ['Johnson & Johnson', 'pharmaceuticals-and-biotechnology/johnson-and-johnson'],
-    ['Procter & Gamble Co.', 'household-goods/procter-and-gamble-co'],
-    ['Realty Income Corp.', 'real-estate-investment-trusts/realty-income-corp'],
-    ['Verizon Communications Inc.', 'telecomms/verizon-communications-inc']]
-                         )
+     ['IBM Corp.',
+      'electronic-and-electrical-equipment/'
+      + 'international-business-machines-corp'],
+     ['Johnson & Johnson', 
+      'pharmaceuticals-and-biotechnology/johnson-and-johnson'],
+     ['Procter & Gamble Co.', 'household-goods/procter-and-gamble-co'],
+     ['Realty Income Corp.',
+      'real-estate-investment-trusts/realty-income-corp'],
+     ['Verizon Communications Inc.', 'telecomms/verizon-communications-inc']
+    ]
+)
 
 # The total number of companies
 n_companies = len(company_urls)
@@ -37,14 +42,20 @@ def transform_df(df, company_name):
     last_dividend = df.loc[df['Status'] == 'Paid']['Decl. amount'].iloc[0]
     
     # Add a column with the company name
-    df['Company name'] = pd.Series([company_name for _ in range(len(df.index))])
-    df['Forecast amount'] = pd.Series([last_dividend for _ in range(len(df.index))])
+    df['Company name'] = pd.Series([company_name
+                                    for _ in range(len(df.index))])
+    df['Forecast amount'] = pd.Series([last_dividend
+                                       for _ in range(len(df.index))])
     
     # Specify the relevant column names
-    cols = ['Company name', 'Status', 'Ex-div date', 'Pay date', 'Forecast amount']
+    cols = ['Company name', 'Status', 'Ex-div date', 'Pay date',
+            'Forecast amount']
     df_transformed = df[cols]
     # Only use data for delcared or forecast payments
-    condition = (df_transformed['Status'] == 'Forecast') | (df_transformed['Status'] == 'Declared')
+    condition = (
+        (df_transformed['Status'] == 'Forecast') 
+        | (df_transformed['Status'] == 'Declared')
+    )
     df_transformed = df_transformed.loc[condition]
     
     # Drop the Status column
@@ -83,7 +94,8 @@ def concatenate_dfs():
     
     for i in range(len(df_list)):
         # Get transformed df
-        retrieved_dfs[i] = transform_df(retrieved_dfs[i], retrieved_companies[i])
+        retrieved_dfs[i] = transform_df(retrieved_dfs[i], 
+                                        retrieved_companies[i])
         
     # Concatenate all dfs
     df_concatenated = pd.concat(retrieved_dfs, ignore_index=True)
@@ -92,7 +104,9 @@ def concatenate_dfs():
 
 def sort_and_select_next(df_concatenated, number):
     # Convert dates to datetime
-    df_concatenated['Ex-div date'] = pd.to_datetime(df_concatenated['Ex-div date'])
+    df_concatenated['Ex-div date'] = pd.to_datetime(
+        df_concatenated['Ex-div date']
+    )
     df_concatenated['Pay date'] = pd.to_datetime(df_concatenated['Pay date'])
     
     # Drop ex-div dates from before today
@@ -104,8 +118,10 @@ def sort_and_select_next(df_concatenated, number):
     df_concatenated = df_concatenated.sort_values(by=['Ex-div date'])
     
     # Format dates
-    df_concatenated['Ex-div date'] = df_concatenated['Ex-div date'].dt.strftime('%d %b %Y')
-    df_concatenated['Pay date'] = df_concatenated['Pay date'].dt.strftime('%d %b %Y')
+    df_concatenated['Ex-div date'] = df_concatenated['Ex-div date'] \
+        .dt.strftime('%d %b %Y')
+    df_concatenated['Pay date'] = df_concatenated['Pay date'] \
+        .dt.strftime('%d %b %Y')
     
     return df_concatenated.head(number)
 

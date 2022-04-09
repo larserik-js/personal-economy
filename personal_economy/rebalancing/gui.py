@@ -8,7 +8,7 @@ class App(tk.Tk):
         super().__init__()
 
         # initialize data
-        self.person_names = ['LE', 'Anna']
+        self.person_names = ['Person1', 'Person2']
         self.currencies = ['DKK', 'NOK', 'EUR', 'USD']
 
         self.person, self.amount, self.currency = '', '', ''
@@ -33,10 +33,13 @@ class App(tk.Tk):
         headline_font = ('Helvetica', 12, 'bold')
 
         # Option menu (input person name)
-        option_label_person = ttk.Label(self,  text='Select person name:', font = headline_font)
+        option_label_person = ttk.Label(self,  text='Select person name:', 
+                                        font = headline_font)
         option_label_person.grid(row=0, column=0, sticky=tk.W, **paddings)
-        option_menu_person = ttk.OptionMenu(self, self.option_var_person, self.person_names[0],
-                                            *self.person_names, command=None)
+        option_menu_person = ttk.OptionMenu(
+            self, self.option_var_person, self.person_names[0],
+            *self.person_names, command=None
+        )
         option_menu_person.grid(row=0, column=1, sticky=tk.W, **paddings)
 
         # Input field (investment amount)
@@ -48,14 +51,18 @@ class App(tk.Tk):
         self.entry_amount.grid(row=1, column=1)
 
         # Option menu (currency)
-        #option_label_person = ttk.Label(self,  text='Select person name:', font = headline_font)
+        #option_label_person = ttk.Label(self,  text='Select person name:', 
+        #                                font = headline_font)
         #option_label_person.grid(column=1, row=0, sticky=tk.W, **paddings)
-        option_menu_person = ttk.OptionMenu(self, self.option_var_currency, self.currencies[0],
-                                            *self.currencies, command=None)
+        option_menu_person = ttk.OptionMenu(
+            self, self.option_var_currency, self.currencies[0],
+            *self.currencies, command=None
+        )
         option_menu_person.grid(row=1, column=2, sticky=tk.W, **paddings)
 
         # OK button
-        ok_button = tk.Button(self, text='OK', state=tk.NORMAL, command=self.get_input)
+        ok_button = tk.Button(self, text='OK', state=tk.NORMAL, 
+                              command=self.get_input)
         ok_button.grid(row=3, column=1)
 
     def get_input(self):

@@ -65,6 +65,7 @@ class Window:
 def run():
     # Make window object
     window_obj = Window()
+
     # Run mainloop
     window_obj.mainloop()
 

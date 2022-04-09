@@ -7,7 +7,8 @@ import matplotlib.pyplot as plt
 
 from personal_economy.rebalancing import gui
 from personal_economy.rebalancing import scraper
-from personal_economy.rebalancing.diversification import risk_categories, get_diversification_dicts
+from personal_economy.rebalancing.diversification import (
+    risk_categories, get_diversification_dicts)
 
 
 class Input:
@@ -23,7 +24,9 @@ class Input:
         self.amount_DKK = self.ER_dict[self.currency] * self.amount
 
         # Diversification dictionaries
-        self.diversification_dict, self.region_diversification_dict = get_diversification_dicts(self.person)
+        self.diversification_dict, self.region_diversification_dict \
+            = get_diversification_dicts(self.person)
+
 
 class CalculateInvestments(Input):
 
@@ -58,7 +61,8 @@ class CalculateInvestments(Input):
         # Instrument categories
         df_categories = df.Category.unique()
 
-        if np.any([risk_category not in risk_categories for risk_category in df_categories]):
+        if np.any([risk_category not in risk_categories 
+                   for risk_category in df_categories]):
             print('Incorrect risk category in input .xlsx document.')
             sys.exit()
 
@@ -84,9 +88,15 @@ class CalculateInvestments(Input):
 
         for category, fraction in self.diversification_dict.items():
             if category in self.categories:
-                amounts = (self.df.Amount.loc[(self.df.Category == category)]).to_numpy()
+                amounts = self.df.Amount.loc[
+                    (self.df.Category == category)
+                ].to_numpy()
+
                 # Array of strings
-                ERs = self.df.Currency.loc[(self.df.Category == category)].to_numpy()
+                ERs = self.df.Currency.loc[
+                    (self.df.Category == category)
+                ].to_numpy()
+
                 # Array of exchange rate values
                 ERs = self._get_ERs(ERs)
                 
@@ -98,10 +108,14 @@ class CalculateInvestments(Input):
         return current_distribution_dict
 
     def _get_distribution_difference(self):
-        current_distribution = np.array([value for value in self.current_distribution_dict.values()])
+        current_distribution = np.array(
+            [value for value in self.current_distribution_dict.values()]
+        )
 
-        desired_distribution = np.array([value * (self.total_value + self.amount_DKK) 
-                                for value in self.diversification_dict.values()])
+        desired_distribution = np.array(
+            [value * (self.total_value + self.amount_DKK) 
+                for value in self.diversification_dict.values()]
+        )
 
         return desired_distribution - current_distribution
 
@@ -110,7 +124,9 @@ class CalculateInvestments(Input):
         desired_distribution_dict = {}
                         
         for category, fraction in self.diversification_dict.items():
-            desired_distribution_dict[category] = fraction * (self.total_value + self.amount_DKK) 
+            desired_distribution_dict[category] = (
+                fraction * (self.total_value + self.amount_DKK)
+            )
         
         return desired_distribution_dict
 
@@ -121,23 +137,29 @@ class CalculateInvestments(Input):
         function = lambda x: np.linalg.norm(x - distribution_difference)
         
         # The total amount of new investments should equal the available amount
-        constraints = {'type': 'eq', 'fun': lambda x: x.sum() - available_amount}
+        constraints = {'type': 'eq', 
+                       'fun': lambda x: x.sum() - available_amount}
 
         # Solve
-        sol = optimize.minimize(function, distribution_difference, method='SLSQP', 
-                       constraints=constraints,
-                       bounds=[(0.,None) for _ in range(len(distribution_difference))])
+        sol = optimize.minimize(
+            function, distribution_difference, method='SLSQP', 
+            constraints=constraints, 
+            bounds=[(0.,None) for _ in range(len(distribution_difference))]
+        )
 
         return sol['x']
 
     def _get_investments(self):
         # # An array of the investments
-        investments = self._solve_for_amounts(self.distribution_difference, self.amount_DKK)
+        investments = self._solve_for_amounts(self.distribution_difference,
+                                              self.amount_DKK)
 
         # The dictionary of investments
         investments_dict = {}
         for i in range(len(self.diversification_dict.keys())):
-            investments_dict[list(self.diversification_dict.keys())[i]] = investments[i]
+            investments_dict[
+                list(self.diversification_dict.keys())[i]
+            ] = investments[i]
         
         return investments_dict
 
@@ -148,7 +170,10 @@ class CalculateInvestments(Input):
         
         for ETF_name, fraction in self.region_diversification_dict.items():
             ER = self.df.Currency.loc[(self.df.Name == ETF_name)].to_numpy()[0]
-            current_distribution.append(self.df.Amount.loc[(self.df.Name == ETF_name)].to_numpy()[0] * self.ER_dict[ER])
+            current_distribution.append(
+                (self.df.Amount.loc[(self.df.Name == ETF_name)].to_numpy()[0]
+                    * self.ER_dict[ER])
+            )
             diversification_fractions.append(fraction)
 
         # Convert to Numpy array
@@ -157,16 +182,21 @@ class CalculateInvestments(Input):
 
         # Get desired distribution
         total_new_investments = self.investments_dict['Stocks_ETF']
-        desired_distribution = (current_distribution.sum() + total_new_investments) * diversification_fractions
+        desired_distribution = (
+            current_distribution.sum() + total_new_investments
+        ) * diversification_fractions
         distribution_difference = (desired_distribution - current_distribution)
         
         # investments = sol['x']
-        investments = self._solve_for_amounts(distribution_difference, total_new_investments)
+        investments = self._solve_for_amounts(distribution_difference,
+                                              total_new_investments)
 
         # The investment dictionary
         stock_ETF_dict = {}
         for i in range(len(self.region_diversification_dict)):
-            stock_ETF_dict[list(self.region_diversification_dict.keys())[i]] = investments[i]
+            stock_ETF_dict[
+                list(self.region_diversification_dict.keys())[i]
+            ] = investments[i]
             
         return stock_ETF_dict
 
@@ -174,9 +204,11 @@ class CalculateInvestments(Input):
         fig, ax = plt.subplots(figsize=(10,6))
         
         # Portfolio
-        ax.bar(self.current_distribution_dict.keys(), self.current_distribution_dict.values(), 
+        ax.bar(self.current_distribution_dict.keys(),
+               self.current_distribution_dict.values(), 
                alpha=1, label='Current distribution')
-        ax.bar(self.desired_distribution_dict.keys(), self.desired_distribution_dict.values(), 
+        ax.bar(self.desired_distribution_dict.keys(),
+               self.desired_distribution_dict.values(), 
                alpha=0.5, label='Desired distribution')
         
         plt.xticks(rotation=20)
@@ -191,7 +223,7 @@ class CalculateInvestments(Input):
     def _print_information(self):
         print('')
         print('###############################################################')
-        print(f'############## Rebalancing for {self.person}  ############################')
+        print(f'############## Rebalancing for {self.person}  ################')
         print('###############################################################')
         print('')
         print(f'Exchange rates (date: {self.ER_date}):')
@@ -204,7 +236,8 @@ class CalculateInvestments(Input):
         print('')
         
         for category, value in self.current_distribution_dict.items():
-            print(f'{category:30s}' + f'{100*value/self.total_value:8.2f}% ({value:.2f} DKK)')
+            print(f'{category:30s}'
+                  + f'{100*value/self.total_value:8.2f}% ({value:.2f} DKK)')
             
         print('')
         print(f'Total current portfolio value: {self.total_value:.2f} DKK')
@@ -233,9 +266,11 @@ class CalculateInvestments(Input):
         value_DKK_sum = 0
         for ETF_name, amount in self.stock_ETF_investments_dict.items():
             value_DKK_sum += amount
-            print(f'Invest: {amount / self.ER_dict["EUR"]:.2f} EUR in {ETF_name}')
+            print(f'Invest: {amount / self.ER_dict["EUR"]:.2f} EUR '
+                  + f'in {ETF_name}')
 
-        print(f'Total: {value_DKK_sum / self.ER_dict["EUR"]:.2f} EUR = {value_DKK_sum:.2f} DKK')
+        print(f'Total: {value_DKK_sum / self.ER_dict["EUR"]:.2f} EUR '
+              + f'= {value_DKK_sum:.2f} DKK')
         print('')
 
 
