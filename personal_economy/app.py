@@ -59,8 +59,8 @@ class _Window:
     def _run_dividend_dates(self):
         self._close_window()
 
-        # Run the dividend_dates.py script
-        dividend_dates.run()
+        dividends = dividend_dates.GetDividendDates()
+        dividends.show_table()
 
     def _run_rebalancing(self):
         self._close_window()
