@@ -1,3 +1,9 @@
+"""Web scraper for currency exchange rates.
+
+Functions:
+    * scrape_ERs - attempts to scrape a webpage for the latest currency exchange
+      rates.
+"""
 from datetime import date, timedelta
 
 import pandas as pd

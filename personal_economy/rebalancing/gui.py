@@ -1,3 +1,9 @@
+"""Input widget.
+
+Functions:
+    * get_input - initialize widget where the user name, the investment amount,
+      and investment currency is input.
+"""
 import tkinter as tk
 from tkinter import ttk
 

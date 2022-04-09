@@ -1,7 +1,13 @@
+"""Dividend dates script.
+
+Functions:
+    * run - runs the entire script. Gets the information by scraping a webpage,
+      and returns the information in a table in the terminal.
+"""
 from datetime import datetime, date
-from timeit import default_timer as DT
 from threading import Thread
 import logging
+import sys
 
 import pandas as pd
 import numpy as np
@@ -17,27 +23,31 @@ n_companies = len(company_urls)
 # The list of data frames for the companies
 df_list = []
 
+
 # Returns the entire url given a unique string
 def get_url(unique_string):
     initial_string = 'https://www.dividendmax.com/united-states/nyse/'
     final_string = '/dividends'
     return initial_string + unique_string + final_string
 
+
 def transform_df(df, company_name):
     # Get last paid dividend amount
     last_dividend = df.loc[df['Status'] == 'Paid']['Decl. amount'].iloc[0]
     
+    n_rows = len(df.index)
+
     # Add a column with the company name
-    df['Company name'] = pd.Series([company_name
-                                    for _ in range(len(df.index))])
-    df['Forecast amount'] = pd.Series([last_dividend
-                                       for _ in range(len(df.index))])
+    df['Company name'] = pd.Series([company_name for _ in range(n_rows)])
+    # Add a column with the forecast amount
+    df['Forecast amount'] = pd.Series([last_dividend for _ in range(n_rows)])
     
     # Specify the relevant column names
     cols = ['Company name', 'Status', 'Ex-div date', 'Pay date',
             'Forecast amount']
     df_transformed = df[cols]
-    # Only use data for delcared or forecast payments
+    # Only use data for declared or forecast payments
+    # This (among possible others) excludes the 'paid' payments
     condition = (
         (df_transformed['Status'] == 'Forecast') 
         | (df_transformed['Status'] == 'Declared')
@@ -49,14 +59,16 @@ def transform_df(df, company_name):
     
     return df_transformed
 
+
 def get_df(company_name, url, df_list):
     try:
         logging.info("Requested..." + url)
         df = pd.read_html(io=url, match='Currency')[0]
-        df_list.append([df, company_name])
     except:
         logging.error(f'Error with check for {url}!')
-    return None
+    else:
+        df_list.append([df, company_name])
+
 
 # Returns all dfs concatenated, using threading
 def concatenate_dfs():
@@ -84,7 +96,11 @@ def concatenate_dfs():
                                         retrieved_companies[i])
         
     # Concatenate all dfs
-    df_concatenated = pd.concat(retrieved_dfs, ignore_index=True)
+    if retrieved_dfs:
+        df_concatenated = pd.concat(retrieved_dfs, ignore_index=True)
+    else:
+        print('No information could be scraped. Exiting program.')
+        sys.exit()
 
     return df_concatenated
 

@@ -1,3 +1,9 @@
+"""The main application.
+
+Functions:
+    * run - initializes a widget, which lets the user decide which of the tools
+      to use.
+"""
 import tkinter as tk
 
 from personal_economy.rebalancing import rebalancing
@@ -68,6 +74,3 @@ def run():
 
     # Run mainloop
     window_obj.mainloop()
-
-
-

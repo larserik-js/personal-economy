@@ -1,3 +1,10 @@
+"""Contains specific information on the risk allocation of the different
+portfolios.
+
+Functions:
+    * get_diversification_dicts - return the specific risk allocation for a
+      given input person name.
+"""
 import sys
 
 import numpy as np

@@ -1,3 +1,10 @@
+"""Portfolio rebalancing main script.
+
+This is where all information is gathered, processed, and presented to the user.
+
+Functions:
+    * run - runs the script.
+"""
 import sys
 
 import numpy as np
