@@ -1,0 +1,6 @@
+Altria Group Inc.,tobacco/altria-group-inc
+IBM Corp.,electronic-and-electrical-equipment/international-business-machines-corp
+Johnson & Johnson,pharmaceuticals-and-biotechnology/johnson-and-johnson
+Procter & Gamble Co.,household-goods/procter-and-gamble-co
+Realty Income Corp.,real-estate-investment-trusts/realty-income-corp
+Verizon Communications Inc.,telecoms/verizon-communications-inc

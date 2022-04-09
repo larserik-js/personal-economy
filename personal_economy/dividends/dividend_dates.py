@@ -7,23 +7,9 @@ import pandas as pd
 import numpy as np
 
 
-t_init = DT()
-
 # The keys are the company names
 # The values are the unique part of the URL of the dividend webpage
-company_urls = np.array(
-    [['Altria Group Inc.', 'tobacco/altria-group-inc'],
-     ['IBM Corp.',
-      'electronic-and-electrical-equipment/'
-      + 'international-business-machines-corp'],
-     ['Johnson & Johnson', 
-      'pharmaceuticals-and-biotechnology/johnson-and-johnson'],
-     ['Procter & Gamble Co.', 'household-goods/procter-and-gamble-co'],
-     ['Realty Income Corp.',
-      'real-estate-investment-trusts/realty-income-corp'],
-     ['Verizon Communications Inc.', 'telecomms/verizon-communications-inc']
-    ]
-)
+company_urls = np.loadtxt('input/company_urls.txt', dtype=str, delimiter=',')
 
 # The total number of companies
 n_companies = len(company_urls)
@@ -148,5 +134,3 @@ def run():
     next_dividends = format_cents_to_dollars(next_dividends)
     
     print(next_dividends)
-    
-    print(f'Total time: {DT() - t_init:.2f} s')
