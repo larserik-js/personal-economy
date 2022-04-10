@@ -20,7 +20,7 @@ source env/bin/activate
 ```sh
 pip3 install -r requirements.txt
 ```
-The libraries listed in the document are compatible with Python 3.8.10-3.9.12, and were last available for download on 5th April 2022.
+The libraries listed in the document are compatible with Python 3.9.12, and were last available for download on 5th April 2022.
 
 ## Usage
 * Start the application by running ``RUN.sh``, which is an executable Shell script.
