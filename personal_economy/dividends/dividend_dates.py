@@ -33,7 +33,6 @@ class GetDividendDates:
         final_string = '/dividends'
         return initial_string + unique_string + final_string
 
-
     def _transform_df(self, df, company_name):
         # Get last paid dividend amount
         last_dividend = df.loc[df['Status'] == 'Paid']['Decl. amount'].iloc[0]
@@ -62,7 +61,6 @@ class GetDividendDates:
         
         return df_transformed
 
-
     def _get_df(self, company_name, url):
         try:
             logging.info("Requested..." + url)
@@ -71,7 +69,6 @@ class GetDividendDates:
             logging.error(f'Error with check for {url}!')
         else:
             self.df_list.append([df, company_name])
-
 
     # Returns all dfs concatenated, using threading
     def _concatenate_dfs(self):

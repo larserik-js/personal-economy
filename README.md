@@ -7,22 +7,30 @@ Overall, two tools are included:
 
 ## Setup (macOS & Linux)
 The necessary libraries for this application can be installed in the following way:
-* Navigate into the directory of ``requirements.txt``.
-* Set up a virtual environment.
+* Navigate into the repository directory, i.e. the location of ``requirements.txt``.
+* Set up a virtual environment, e.g. via:
+```sh
+python3 -m venv env
+```
+* Activate the environment via:
+```sh
+source env/bin/activate
+```
 * Install libraries via:
 ```sh
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
+The libraries listed in the document are compatible with Python 3.8.10-3.9.12, and were last available for download on 5th April 2022.
 
 ## Usage
-* Run the application by double-clicking ``RUN.sh``, which is an executable Shell script.
+* Start the application by running ``RUN.sh``, which is an executable Shell script.
 * Choose between the tools by clicking the appropriate button.
 
 ### Rebalancing
 Enter the required information in the input fields. The result will be both a bar chart, comparing the current portfolio with the portfolio after investing the amount at hand, and information (printed in the terminal) on the exact amounts required to invest in the different financial instruments.
 
 ### Dividend dates
-This tool activates automatically when clicking the button. Given a list of company names (pre-written in the code for the purpose of this repository), the application returns a table showing the next 10 ex-dividend dates for the companies, and the forecast payment amount per share.
+This tool activates automatically when clicking the button. Given a list of company names, found in ``input/company_urls.txt``, the application returns a table showing the next 10 ex-dividend dates and payment dates for the companies, as well as the forecast payment amount per share.
 
 ## Meta
 Lars Erik J. Skjegstad - lars_erik_skjegstad@hotmail.com

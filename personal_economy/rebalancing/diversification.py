@@ -38,7 +38,7 @@ def _values_sum_to_one(diversification_dict):
 def get_diversification_dicts(person):
 
     # Person diversification dictionaries
-    if person == 'Person1':
+    if person == 'test-person1':
         person_diversification_dict = {# High risk
                                        'Stocks_ETF': 0.66,
                                        'Dividend_stocks_high': 0.03,
@@ -51,7 +51,7 @@ def get_diversification_dicts(person):
                                        'Dividend_stocks_low': 0.08,
                                        'Bonds': 0.0}
 
-    elif person == 'Person2':
+    elif person == 'test-person2':
         person_diversification_dict = {# High risk
                                        'Stocks_ETF': 0.67,
                                        'Dividend_stocks_high': 0.0,

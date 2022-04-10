@@ -14,7 +14,7 @@ class _App(tk.Tk):
         super().__init__()
 
         # initialize data
-        self.person_names = ['Person1', 'Person2']
+        self.person_names = ['test-person1', 'test-person2']
         self.currencies = ['DKK', 'NOK', 'EUR', 'USD']
 
         self.person, self.amount, self.currency = '', '', ''
