@@ -177,11 +177,19 @@ class CalculateInvestments(_Input):
         diversification_fractions = []
         
         for ETF_name, fraction in self.region_diversification_dict.items():
-            ER = self.df.Currency.loc[(self.df.Name == ETF_name)].to_numpy()[0]
-            current_distribution.append(
-                (self.df.Amount.loc[(self.df.Name == ETF_name)].to_numpy()[0]
-                    * self.ER_dict[ER])
-            )
+            # The currency of the ETF
+            ER = self.df.Currency.loc[(self.df.Name == ETF_name)].to_numpy()
+            amount = self.df.Amount.loc[(self.df.Name == ETF_name)].to_numpy()
+
+            # If there exists an investment in the given ETF
+            if ER:
+                ER = ER[0]
+                current_distribution.append(amount[0] * self.ER_dict[ER])
+                
+            else:
+                ER = ''
+                current_distribution.append(0)
+
             diversification_fractions.append(fraction)
 
         # Convert to Numpy array
