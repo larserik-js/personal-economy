@@ -1,4 +1,6 @@
+AbbVie Inc.,pharmaceuticals-and-biotechnology/abbvie-inc
 Altria Group Inc.,tobacco/altria-group-inc
+Federal Realty Investment Trust,real-estate-investment-trusts/federal-realty-investment-trust
 IBM Corp.,electronic-and-electrical-equipment/international-business-machines-corp
 Johnson & Johnson,pharmaceuticals-and-biotechnology/johnson-and-johnson
 Procter & Gamble Co.,household-goods/procter-and-gamble-co

@@ -117,9 +117,9 @@ class GetDividendDates:
         )
         df_concatenated['Pay date'] = pd.to_datetime(df_concatenated['Pay date'])
         
-        # Drop ex-div dates from before today
+        # Drop pay dates from before today
         date_today = datetime.combine(date.today(), datetime.min.time())
-        condition = (df_concatenated['Ex-div date'] >= date_today)    
+        condition = (df_concatenated['Pay date'] >= date_today)    
         df_concatenated = df_concatenated.loc[condition]
         
         # Sort rows by ex dividend dates
